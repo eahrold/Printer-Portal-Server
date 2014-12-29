@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block nav %}
+{% include "printers/nav.html" %}
+{% endblock %}
+
+{% load bootstrap_toolkit %}
+{% block content %}
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+{% if privateKey %}
+    <form action={% url "private_key_edit" privateKey.id %} 
+    method="POST" 
+    enctype="multipart/form-data">{% csrf_token %}
+{% else %}
+    <form action={% url "private_key_add" %} 
+    method="POST" 
+    enctype="multipart/form-data">{% csrf_token %}
+{% endif %}
+    <table>	
+        {{ form|as_bootstrap }}
+    </table>
+	</br><p><button type="submit" class="btn btn-default">Save</button>
+	<button type="submit" class="btn btn-danger" name='cancel' value='cancel'>Cancel</button></p>
+    </form>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block nav %}
+{% include "printers/nav.html" %}
+{% endblock %}
+{% block content %}
+<h3>{{ instance }} Printers</h3>
+<ul>
+	{% for object in instance.printers.all %}
+<li><a href="{{ object.get_details_url }}">{{ object.description }}</a></li>
+	{% endfor %}
+</ul>
+<table id="formset" class="form">
+    <thead><tr>
+		<td>
+			<form action={%url "printerlist_edit" instance.id %} method="GET">{% csrf_token %}
+				<button type="submit" class="btn primary">Edit List</button>
+			</form>
+		</td>
+		<td>&nbsp;&nbsp;&nbsp;</td>
+
+		<td>
+			<form action={%url "printerlist_delete" instance.id %} method="GET">{% csrf_token %}
+	    		<button type="submit" class="btn btn-danger">Delete List</button>
+			</form>
+		</td>
+
+</tr></thead>
+{% endblock %}

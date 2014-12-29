@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block nav %}
+{% include "printers/nav.html" %}
+{% endblock %}
+
+{% load bootstrap_toolkit %}
+{% block content %}
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+{% if version %}
+	<h3>Edit Version</h3>
+    <form action={%url "version_edit" version.id %} method="POST" enctype="multipart/form-data">{% csrf_token %}
+ {% else %}
+ 	<h3>Add Version</h3>
+	<form action={% url "version_add" %} method="POST" enctype="multipart/form-data">{% csrf_token %}
+ {% endif %}
+        <table>	
+            {{ form|as_bootstrap }}
+        </table>
+	</br><p><button type="submit" class="btn primary">Save</button></p>
+    </form>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block nav %}
+{% include "printers/nav.html" %}
+{% endblock %}
+{% block content %}
+<h3>{{ instance.name }}</h3>
+<table class="client_info table table-striped table-condensed table-bordered">
+    <tbody>
+		<tr>
+			<th>Description:</th>
+			<td>{{ instance.description }}</td>
+		</tr>
+		<tr>
+			<th>Location:</th>
+			<td>{{ instance.location }}</td>
+		</tr>
+		<tr>
+			<th>URL:</th>
+			<td>{{ instance.url }}</td>
+		</tr>
+		<tr>
+			<th>Protocol:</th>
+			<td>{{ instance.protocol }}</td>
+		</tr>
+		<tr>
+			<th>Model:</th>
+			<td>{{ instance.model }}</td>
+		</tr>
+		<tr>
+			<th>PPD:</th>
+			<td>{{ printer.ppd }}</td>
+		</tr>
+		{% for o in instance.option.all %}
+		<tr>
+			<th>option:</th>
+			<td>{{ o.option }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+<br/>
+<table>
+    <thead><tr>
+		<td>
+			<form action={%url "printer_edit" instance.id%} method="GET">{% csrf_token %}
+				<button type="submit" class="btn primary">Edit Printer</button>
+			</form>
+		</td>
+		<td>&nbsp;&nbsp;&nbsp;</td>
+
+		<td>
+			<form action={%url "printer_delete" instance.id%} method="GET">{% csrf_token %}
+	    		<button type="submit" class="btn btn-danger">Delete Printer</button>
+			</form>
+		</td>
+
+</tr></thead>
+
+{% endblock %}

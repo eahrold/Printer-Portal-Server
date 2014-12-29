@@ -1,0 +1,99 @@
+
+{% load i18n %}
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{% block title %}{{ APP_NAME }}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+	<link href='{{ STATIC_URL }}css/lato.css' rel='stylesheet' type='text/css' />
+    <link href="{{ STATIC_URL }}bootstrap/css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    </style>
+    <link href="{{ STATIC_URL }}bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+<link href="{{ STATIC_URL }}css/style.css" rel="stylesheet">
+<link rel="stylesheet"
+  href='{{ STATIC_URL }}bootstrap/css/datatables-bootstrap.css' 
+  type="text/css" media="all" />
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="{% url 'index_view' %}">{{ APP_NAME }}</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+				{% block nav %}
+			  {% endblock %}
+  			{% if user.is_authenticated %}  			
+  			<li class="dropdown"><a class="dropdown-toggle" id="dLabel" data-toggle="dropdown" data-target="#" href="#">
+  			    {{ user.username }}<b class="caret"></b></a>
+  			  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+  			  	<li><a href={% url "change_password" %}>{% trans "Change password" %}</a></li>
+                <li><a href={% url "admin:index" %}>Administraton</a></li>
+                <li><a href={% url "logout" %}>{% trans "Log out" %}</a></li>
+  			  </ul>
+  			</li>	
+        <li class="dropdown"><a class="dropdown-toggle" id="dLabel" data-toggle="dropdown" data-target="#" href={%url "manage" %}>Manage<b class="caret"></b></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+            <li><a href={% url "manage" %}>Printers & Lists</a></li>
+            {% if update_server %}
+            <li><a href={%url "su-index" %}>Update Server</a></li>
+            {% endif %}
+          </ul>
+        </li>
+  			{% endif %}  
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+    <div class="container">
+{% block content %}
+      <!-- Main hero unit for a primary marketing message or call to action -->
+      <div class="hero-unit">
+        <h1>{{ APP_NAME }}</h1>
+        <p>You need to log in first before doing anything</p>
+        <p><a class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+      </div>
+{% endblock %}
+      <hr>
+      <footer>
+        <div class='container'></div>
+        <font color='gray'><center></center></font>
+        </div>
+      </footer>
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/datatables-bootstrap.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+
+{% block script %}
+{% endblock%}
+  </body>
+</html>

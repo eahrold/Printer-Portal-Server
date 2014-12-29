@@ -1,0 +1,7 @@
+Django==1.7.1
+django-bootstrap-toolkit==2.15.0
+django-filter
+djangorestframework
+
+markdown2==2.3.0
+netaddr

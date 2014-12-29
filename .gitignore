@@ -1,0 +1,12 @@
+*.pyc
+*.old
+*.orig
+*.db
+*.log
+.DS_Store
+
+settings.py
+dsa_priv.pem
+
+printer_portal/static/*
+printer_portal/files/*/*

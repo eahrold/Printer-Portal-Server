@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block nav %}
+{% include "printers/nav.html" %}
+{% endblock %}
+
+{% load bootstrap_toolkit %}
+{% block content %}
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+{% if instance %}
+	<h3>Edit Printer</h3>
+    <form action={%url "printer_edit" instance.id %} method="POST" enctype="multipart/form-data">{% csrf_token %}
+{% else%}
+	<h3>Add Printer</h3>
+    <form action={%url "printer_add" %} method="POST" enctype="multipart/form-data">{% csrf_token %}
+{% endif %}
+		<table>	
+        	{{ form|as_bootstrap }}
+    	</table>
+        <p><button type="submit" class="btn primary">Save</button></p>
+    </form>
+	</br><p>* denotes required field</p>
+{% endblock %}

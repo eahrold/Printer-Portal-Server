@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load i18n %}
+{% load schemes %}
+
+{% block content %}
+
+{% if printerlists or subscriptions %}
+
+<div class='container'>
+<h2>
+{% if organization %}
+Welcome to {{ organization }}'s managed printer portal.
+{% else %}
+Welcome to the managed printer portal.
+{% endif %}
+</h2>
+
+<h4>In no time you'll be and running with the all printers you need.</h4></br>
+</div>
+
+
+
+<font size="4">
+<!-- Setup the Client installer info -->
+<div class='container'>
+{% if version %}
+	<strong>First: <a href={{ version }}>Download the Printer Portal Client</a></strong></br>
+	<font size="2"><i>Copy this into your applications folder, and open it once!</i></font></br>
+{% endif %}
+	<hr></hr>
+</div>
+
+<!-- Setup the printer list list -->
+{% if printerlists %}
+
+<div class='container' >
+	<strong>Select from one of the self service lists below.</strong></br>
+	<font size="2"><i>It will automatically populate the Printer-Installer menu and you can add the printers you need.</i></font><br/>
+
+	<ul>
+	    {% for list in printerlists %}
+		<li><font size="3"><a href="{{ list.name|client_open_url:site_info}}">{{ list.name }}</a></font></li>
+	    {% endfor %}
+	</ul>
+    <hr></hr>
+</div>
+{% endif %}
+
+<!-- Setup the subscription tab list -->
+{% if subscriptions %}
+<div class='container' >
+	<strong>Or if you prefer, you can subscribe to nearby printers.</strong></br>
+	<font size="2"><i>This will automatically update your printer list based on your network location.</i></font>
+	<br/><br/>
+	<div class ='container'>
+	<button type="button" class="btn btn-default"><a href="{{ domain }}/subscribe">Subscribe</a></button>
+	<button type="button" class="btn btn-default"><a href="{{ domain }}/unsubscribe">Unsubscribe</a></button>
+	</div>
+    <hr></hr>
+</div>
+{% endif %}
+
+
+
+<!-- Final stages -->
+<div class='container'>
+	<strong>Then simply click on this icon (<a href="{{ domain|client_open_url:site_info }}/open"><img src={% static "images/StatusBar.png"  %}></a>) in your menu bar,</strong><br/>
+
+	<font size="2"><i>and select which printers you want installed.</i></font>
+	<br/><br/>
+</div>
+
+<!-- Button trigger modal -->
+<div class='container'>
+
+<button type="button" class="btn btn-default" data-toggle="modal" data-target="#walkThroughModal">
+  Show Walkthrough
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="walkThroughModal" tabindex="-1" role="dialog" aria-labelledby="walkThroughModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="walkThroughModalLabel">Setting up is real easy.</h4>
+      </div>
+      <div class="modal-body">
+      	<dl>
+      		<dt>Download & Install</dt>
+      		<dd>After <a href={{ version }}>downloading</a> the client application from this site, a zip file should be in you "Downloads" folder. Unzip it, then move the unzipped application to you "Applications" folder. Open it once.</dd>
+      		<dd><img src={% static "images/copy.png" %}></dd>
+			</br></br></br>
+	      	<dt>Configure</dt>
+			<dd>Clicking on the <a href="{{ domain }}/open">"Configure..."</a> menu will bring up other options.</dd>
+			<dd><img src={% static "images/config.png" %}></dd>
+			</br></br></br>
+			<dt>Add/Remove</dt>
+			<dd>Then simply select the printer you want to add or remove</dd>
+        	<dd><img src="{% static "images/default.png" %}"></dd>
+        	{% if subscriptions %}
+        	<dd>If you're subscribed to the printers, the standard print dialog box will get auto updated based on the ones nearest you, nothing more needs doing.</dd>
+        	{% endif %}
+    	</dl>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+</font>
+
+{% else %}
+<div class='container alert alert-info'>
+	<H2>It looks like nothing's configured yet.</H2>
+    <H4><a href={% url "manage" %}>Click here to get started setting up your orginazition's printers.</a></H4>
+</div>
+{% endif %}
+
+</center>
+{% endblock %}

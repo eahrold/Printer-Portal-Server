@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block nav %}
+{% include "printers/nav.html" %}
+{% endblock %}
+
+{% block content %}
+{% if versions %}
+<table class="client_info table table-striped table-condensed table-bordered">
+<tbody>
+	<tr>
+		<th>Version</th>
+		<th>Download link</th>
+		<th>Signature</th>
+		<th>Active</th>
+		<th>Delete</th>
+	</tr>
+    {% for v in versions %}
+	<tr>	
+		<th><a href={% url "version_edit" v.id %}>{{ v.version }}</th>
+		<th><a href={{ v.update.url }}>{{v.update.url}}</a></th>
+		<th>{{ v.dsa_signature|truncatechars:20}}</th>
+		<th><a href={% url "version_activate" v.id %}>{{ v.active }}</a></th>
+		<th><a href={% url "version_delete" v.id %}>Delete</a></th>
+	</tr>
+    {% endfor %}
+{% else %}
+	<p><h4>There are currently no versions</h4></p>
+{% endif %}
+</tbody>
+</table>
+<p><a href={% url "version_add" %}>Add Version</a></p></br>
+
+<div><a href={% url "sparkle_default_appcast" %}?display=True>Display production AppCast</a>
+<div><a href={% url "sparkle_default_appcast" %}?display=True&testing=True>Dispaly testing AppCast</a>
+
+</div>
+{% if privateKey %}
+	{% for p in privateKey %}
+	<p><a href={% url "private_key_edit" p.id %}>Reset Private Key</a></p>
+	{% endfor %}
+{% else %}
+	<p><a href={% url "private_key_add" %}>Add Private Key</a></p>
+{% endif %}
+{% endblock %}
+
+
+
