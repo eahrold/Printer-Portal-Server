@@ -6,9 +6,11 @@ These are examples of how to get this up and running on an OS X Mountian Lion Se
 
 You will need to create three files:
 
-###1) httpd_printer_portal.conf
-this file should go here: __/Library/Server/Web/Config/apache2/httpd_printer_portal.conf__
+-
+###1. Apache Conf file
+Create the file: `/Library/Server/Web/Config/apache2/httpd_printer_portal.conf`
 
+With contents:
 ```
 # This is the Config file to accompany the os X server webapp
 # edu.loyno.smc.printer_portal.webapp.plist,
@@ -38,8 +40,13 @@ Alias /printers/files/ /Library/Server/Web/Data/Sites/printer_portal_env/printer
 
 ```
 
-###2) com.github.django.printer_portal.webapp.plist
-This file should go here: __/Library/Server/Web/Config/apache2/webapps/com.github.django.printer_portal.webapp.plist__
+-
+###2. The webapp.plist
+Create the file:
+```
+/Library/Server/Web/Config/apache2/webapps/com.github.eahrold.printer_portal.webapp.plist
+```
+With contents:
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -65,9 +72,17 @@ This file should go here: __/Library/Server/Web/Config/apache2/webapps/com.githu
 </plist>
 
 ```
-###3) printer_portal.wsgi
-Set the "VIR\_ENV\_DIR" to your virtual environment path  
-Then, Place this file at: __/Library/Server/Web/Data/WebApps/printer_portal.wsgi__
+-
+###3. The WSGI configuration
+Create the file
+```
+/Library/Server/Web/Data/WebApps/printer_portal.wsgi
+```
+
+With Contents:  
+
+*_change the `VIR_ENV_DIR` directive below to your virtual environment path_ 
+
 ```
 import os, sys
 import site
@@ -88,7 +103,7 @@ application = django.core.handlers.wsgi.WSGIHandler()
 
 ### After all of the files are installed...
 
-1. open the Server.app  
-2. go to Websites
+1. Open the Server.app  
+2. Go to Websites.
 3. Open the website you wish to enable it on  
-4. in the advanced tab check "PrinterPortal-Server"
+4. In the advanced tab set "Printer-Portal-Server" to enabled.

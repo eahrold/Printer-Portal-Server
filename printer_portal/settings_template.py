@@ -12,28 +12,30 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 
+# CHANGE THIS!!!!
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'zy#z(t$o$rf4ouzslhazo9iywe)fr(udqz59j2k6k#aq-+)x+k'
+
 #######################################################
 ##  Configure printer_portal server specific items ##
 #######################################################
+# The title site.
 APP_NAME = "Printer Portal"
 
-# The URL scheme the client app responsd to. It will automatically
-# be appended with "s" if the serve is secure (i.e. https)
-CLIENT_URL_TYPE = "printerportal"
-
 # Name of your organization used only for branding
-# should be a quoted string
 ORGANIZATION_NAME = "My Great Orginization"
 
 # Set to true if you want the ability to upload and
-# server PPD files and Sparkle update
-SERVE_FILES = True
+# server PPD files and Sparkle update.
+# NOTE: you cannot serve files when running via Heroku
+SERVE_FILES = False
 
 # Configuring Sparkle Updates
 # if set to True you will be able to upload versions of
 # Printer Portal.app and it will automatically create AppCasts
 # for Sparkle, otherwise it will use the GITHUB_APPCAST_URL.
-HOST_SPARKLE_UPDATES = True
+# NOTE: you cannot host updates when running via Heroku
+HOST_SPARKLE_UPDATES = False
 
 # Should access to the printers be available via
 # the REST api interface at http(s)://server.com/api
@@ -48,16 +50,16 @@ RUNNING_ON_APACHE = False
 # print quota software for your environment set this to your forks URL
 GITHUB_APPCAST_URL = "https://raw.githubusercontent.com/eahrold/Printer_Portal/master/Downloads/appcast.xml"
 
-# If not hosting sparkle updates, set these to the
+# If not hosting sparkle updates, set these to where the latest release can be downloaded.
 GITHUB_LATEST_RELEASE = {'user':'eahrold', 'repo':'Printer_Portal'}
+
+# The URL scheme the client app responsd to. It will automatically
+# be appended with "s" if the serve is secure (i.e. https)
+CLIENT_URL_TYPE = "printerportal"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
-
 SITE_ID = 1
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'zy#z(t$o$rf4ouzslhazo9iywe)fr(udqz59j2k6k#aq-+)x+k'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

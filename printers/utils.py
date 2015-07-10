@@ -40,6 +40,8 @@ def github_latest_release(repo_dict):
         pass
     except urllib2.HTTPError:
         pass
+    except urllib2.URLError:
+        pass
 
     return None
 

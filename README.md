@@ -1,6 +1,6 @@
 #Printer Portal Server
 
-A django website for the [Printer Portal client][pi_client]
+A Django website for the [Printer Portal client][pi_client]
 
 ###Front Page
 
@@ -13,23 +13,24 @@ A django website for the [Printer Portal client][pi_client]
 
 --
 
-##Auto Install Script
-For the simplest installation on OS X Server 10.7 or higher, run the auto install script by copy and pasting this into your terminal.
-```
-python -c "$(curl -fsSL https://raw.githubusercontent.com/eahrold/dj-installers/master/dj-printer_portal.py)"
-
-```
-
 The script is also avaliable from the OSX folder in the root of this repo.
 
-###Quick Start
-To manually setup and configure, you can use [this quick start guide][quick-start]
+###Quick Starts
+To set-up you can use one of these quick start guides
+
+- [Configure with Docker-Compose][conf_docker]
+- [Configure with Virtual Environment][conf_vir_env]
+- [Configure with Heroku][conf_heroku]
 
 [add_list]:./docs/images/add_list.png
 [add_printer]:./docs/images/add_printer.png
 [front]:./docs/images/index.png
 [manage]:./docs/images/manage.png
-[quick-start]:./docs/quick_start.md
+
+[conf_vir_env]:./docs/conf_vir_env.md
+[conf_heroku]:./docs/conf_heroku.md
+[conf_docker]:./docs/conf_docker.md
+
 [pi_client]:https://github.com/eahrold/Printer-Portal
 
 

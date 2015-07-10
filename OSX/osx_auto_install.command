@@ -3,12 +3,12 @@
 #set -xv
 export PATH="$PATH:/usr/local/bin:/usr/local/sbin:/Applications/Xcode.app/Contents/Developer/usr/bin"
 
-PROJECT_NAME='printer_portal'
+PROJECT_NAME='printer-portal'
 
-GIT_REPO="https://github.com/eahrold/printer_portal-server.git"
+GIT_REPO="https://github.com/eahrold/printer-portal-server.git"
 GIT_BRANCH="master"
 
-OSX_WEBAPP_PLIST="edu.loyno.smc.printer_portal.webapp.plist"
+OSX_WEBAPP_PLIST="edu.loyno.smc.printer-portal.webapp.plist"
 APACHE_SUBPATH="printers"
 
 ## you only need to set one of the following two requirements...
@@ -379,7 +379,7 @@ cat <<EOF > "${OSX_SERVER_WSGI_DIR}/${WSGI_FILE}"
 import os, sys
 import site
 
-#set the next line to your printer_portal environment
+#set the next line to your printer-portal environment
 VIR_ENV_DIR = '${DJANGO_WEBAPP_VIR_ENV}'
 
 # Use site to load the site-packages directory of our virtualenv
