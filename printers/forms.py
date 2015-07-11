@@ -50,38 +50,51 @@ class PrinterForm(forms.ModelForm):
         required=False)
 
     options = forms.ModelMultipleChoiceField(
-        queryset=Option.objects.all(),
+        queryset=None,
         widget=forms.CheckboxSelectMultiple,
         required=False)
 
     new_option = forms.CharField(max_length=50,
                                  required=False)
 
+    def __init__(self, *args, **kwargs):
+        super(PrinterForm, self).__init__(*args, **kwargs)
+        self.fields['options'].queryset = Option.objects.all()
 
-class PrinterListForm(forms.ModelForm):
+
+class BasePrinterListForm(forms.ModelForm):
+    printers = forms.ModelMultipleChoiceField(
+        label='Included Printers',
+        queryset=None,
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(BasePrinterListForm, self).__init__(*args, **kwargs)
+        self.fields['printers'].queryset = Printer.objects.all()
+
+class PrinterListForm(BasePrinterListForm):
+    '''Form for a standard printer list'''
 
     class Meta:
         model = PrinterList
         exclude = ()
 
-    printers = forms.ModelMultipleChoiceField(
-        label='Included Printers',
-        queryset=Printer.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-        required=False
-        )
-
     public = forms.Select()
 
+    def __init__(self, *args, **kwargs):
+        super(PrinterListForm, self).__init__(*args, **kwargs)
 
-class SubscriptionPrinterListForm(forms.ModelForm):
 
+class SubscriptionPrinterListForm(BasePrinterListForm):
+    '''Form for a subscription printer list'''
     class Meta:
         model = SubscriptionPrinterList
         exclude = ()
 
     printers = forms.ModelMultipleChoiceField(
-        queryset=Printer.objects.all(),
+        queryset=None,
         widget=forms.CheckboxSelectMultiple,
         required=False)
 
@@ -90,3 +103,6 @@ class SubscriptionPrinterListForm(forms.ModelForm):
         required=False,
         validators = [validate_subnet],
         )
+
+    def __init__(self, *args, **kwargs):
+        super(SubscriptionPrinterListForm, self).__init__(*args, **kwargs)

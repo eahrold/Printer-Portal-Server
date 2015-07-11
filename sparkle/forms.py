@@ -9,10 +9,15 @@ class AppcastForm(forms.ModelForm):
 
     class Meta:
         model = Version
+        exclude = ()
 
     application = forms.ModelChoiceField(
-        widget=forms.HiddenInput(),
-        queryset=Application.objects.all())
+        widget = forms.HiddenInput(),
+        queryset = None)
+
+    def __init__(self, *args, **kwargs):
+        super(AppcastForm, self).__init__(*args, **kwargs)
+        self.fields['application'].queryset = Application.objects.all()
 
 
 class PrivateKeyForm(forms.ModelForm):
@@ -20,6 +25,7 @@ class PrivateKeyForm(forms.ModelForm):
 
     class Meta:
         model = PrivateKey
+        exclude = ()
 
     private_key = forms.FileField(label='Private Key', required=True)
 
