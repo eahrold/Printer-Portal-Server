@@ -145,10 +145,8 @@ _CONDITIONAL_APPS = [
 
     # Project level apps
     'printers',
+    'sparkle',
 ]
-
-if HOST_SPARKLE_UPDATES:
-    _CONDITIONAL_APPS.append('sparkle')
 
 if INCLUDE_REST_API:
     _CONDITIONAL_APPS.append('rest_framework')
@@ -178,7 +176,10 @@ if 'DYNO' in os.environ:
     print "Deployed to Heroku."
     # Parse database configuration from $DATABASE_URL
     import dj_database_url
-    DATABASES['default'] =  dj_database_url.config()
+
+    DATABASES = {
+        'default': dj_database_url.config()
+        }
 
     # Honor the 'X-Forwarded-Proto' header for request.is_secure()
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -188,9 +189,11 @@ if 'DYNO' in os.environ:
 
     # Make Sure Debugging is false to Heroku
     DEBUG=False
+
     # If serving from heroku disable the ability to server files
     HOST_SPARKLE_UPDATES = False
     SERVE_FILES=False
+
 elif 'DB_ENV_PGDATA' in os.environ:
     print "Using postgresql_psycopg2"
     DATABASES = {

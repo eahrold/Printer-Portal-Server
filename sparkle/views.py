@@ -1,5 +1,6 @@
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.contrib.sites.models import Site
+from django.conf import settings
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required, permission_required
 
@@ -16,9 +17,20 @@ from printer_portal.utils import site_info
 def index(request):
     versions = Version.objects.all()
     privateKey = PrivateKey.objects.all()
-
     site = Site.objects.get_current()
+
     context = {'versions': versions, 'site': site, 'privateKey': privateKey}
+
+    application =  Application.objects.first()
+    if not application:
+        app_name = None
+        try:
+            app_name = settings.APP_NAME.replace(' ', '-').lower()
+        except AttributeError:
+            app_name = 'client'
+
+        application = Application(name=app_name)
+        application.save()
 
     return render_to_response(
         'sparkle/index.html', context, context_instance=RequestContext(request))
@@ -90,8 +102,8 @@ def version_add(request):
     else:
         form = AppcastForm(
             initial={
-                'application': Application.objects.get(
-                    id=1)})
+                'application' :Application.objects.first()
+                })
     return render_to_response(
         'sparkle/forms/version.html', {'form': form, }, context_instance=RequestContext(request))
 
@@ -135,7 +147,7 @@ def appcast(request, name, testing=False):
     # e.g `http://server.com/sparkle/client/appcast.xml`
     # This is usefull when the site is only hosting a single application.
     if name == '__default':
-        application = get_object_or_404(Application, pk=1)
+        application = Application.objects.first()
     else:
         application = get_object_or_404(Application, name=name)
 

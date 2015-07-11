@@ -1,3 +1,5 @@
+import os
+
 from django.conf.urls import patterns, include, url
 from django.conf import settings
 from django.conf.urls.static import static
@@ -11,7 +13,6 @@ from rest_framework.routers import DefaultRouter
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from printers.api_views import OptionViewSet, PrinterViewSet, PrinterListViewSet
-
 
 urlpatterns = patterns(
     '',
@@ -41,13 +42,23 @@ if settings.HOST_SPARKLE_UPDATES:
         url(r'^sparkle/', include('sparkle.urls'))
     )
 
-if settings.SERVE_FILES and not settings.RUNNING_ON_APACHE:
+## Heroku deployment static files
+if 'DYNO' in os.environ:
     urlpatterns += patterns(
         '',
         # static files
         url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
-        url(r'^files/private/*', RedirectView.as_view(url=u'/%s', permanent=False), name='nowhere'),
-        url(r'^files/(?P<path>.*)$' , 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
+)
+
+# All Other depolyments
+elif not settings.RUNNING_ON_APACHE:
+    if  settings.SERVE_FILES or settings.HOST_SPARKLE_UPDATES:
+        urlpatterns += patterns(
+            '',
+            # static files
+            url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
+            url(r'^files/private/*', RedirectView.as_view(url=u'/%s', permanent=False), name='nowhere'),
+            url(r'^files/(?P<path>.*)$' , 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
 )
 
 # Add the empty pattern include now that all other patterns are added.
