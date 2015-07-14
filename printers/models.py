@@ -10,6 +10,9 @@ from printer_portal.utils import delete_file_on_change, \
     delete_file_on_delete
 
 
+class PPClientGitHubRelease(models.Model):
+    url = models.URLField(max_length=200)
+    last_checked = models.DateField()
 
 class Option(models.Model):
     '''Option model object'''

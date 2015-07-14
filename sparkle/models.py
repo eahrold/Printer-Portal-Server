@@ -32,11 +32,6 @@ class Application(models.Model):
         return u'%s' % self.name
 
 
-class GitHubVersion(models.Model):
-    url = models.URLField(max_length=200)
-    last_checked = models.DateField()
-
-
 class Version(models.Model):
     """A version for a given application"""
 

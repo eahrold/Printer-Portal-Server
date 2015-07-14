@@ -1,32 +1,37 @@
 '''Views'''
+import datetime
+from plistlib import writePlistToString
+
 from django.http import HttpResponse, HttpResponseNotFound
-from django.shortcuts import render_to_response, get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.conf import settings
 
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
-from django.template import RequestContext, Template
-from django.template.loader import get_template
-
-from django.views.generic import TemplateView, View
+from django.views.generic import TemplateView
 from django.views.generic.edit import FormView, CreateView, UpdateView
 from django.core.urlresolvers import reverse
 
-from urlparse import urlunparse
-from plistlib import writePlistToString
-import datetime
-
-from sparkle.models import Version, GitHubVersion
+from sparkle.models import Version
 
 from printer_portal.utils import get_client_ip, \
-    site_info
+                                 site_info
 
-from printers.models import Printer, PrinterList, Option, SubscriptionPrinterList
-from printers.forms import PrinterForm, PrinterListForm, OptionForm, SubscriptionPrinterListForm
+from printers.models import Printer, \
+                            PrinterList, \
+                            Option, \
+                            SubscriptionPrinterList, \
+                            PPClientGitHubRelease
+
+from printers.forms import PrinterForm, \
+                           PrinterListForm, \
+                           OptionForm, \
+                           SubscriptionPrinterListForm
+
 from printers.utils import generate_printer_dict_from_list, \
-    auto_process_form, \
-    github_latest_release
+                           auto_process_form, \
+                           github_latest_release
 
 
 class ProtectedView(TemplateView):
@@ -35,11 +40,18 @@ class ProtectedView(TemplateView):
     def dispatch(self, *args, **kwargs):
         return super(ProtectedView, self).dispatch(*args, **kwargs)
 
+    def __init__(self, *args, **kwargs):
+        super(ProtectedView, self).__init__(*args, **kwargs)
+
+
 
 class IndexView(TemplateView):
-
     '''Index page view'''
     template_name = 'printers/index.html'
+    request = None
+
+    def __init__(self, *args, **kwargs):
+        super(IndexView, self).__init__(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -50,8 +62,9 @@ class IndexView(TemplateView):
 
         # Add in the querysets to
         context['printerlists'] = PrinterList.objects.filter(public=True)
-        context[
-            'subscriptions'] = SubscriptionPrinterList.objects.all().count() > 0
+
+        # Create a BOOL indicating whether there are any subscription lists
+        context['subscriptions'] = SubscriptionPrinterList.objects.all().count() > 0
 
         # create the context for the verson_url
         version_url = None
@@ -63,34 +76,39 @@ class IndexView(TemplateView):
                 version_url = version[0].update.url
 
         # If we're not hosting updates, or it has yet to be configured
-        # with any releases, use the GitHub project page's release.
+        # with any releases, use the client's GitHub release page.
         if not version_url:
             # We only need one object, so get it or create it
-            try:
-                version = GitHubVersion.objects.filter(pk=1)[0]
-            except IndexError:
-                version = GitHubVersion()
+            version = PPClientGitHubRelease.objects.first()
+
+            if not version:
+                print 'Creating new PPClientGitHubRelease'
+                version = PPClientGitHubRelease()
 
             # Only check-in with GitHub once a day for new releases
             # use the locally stored value every other time
-            today = datetime.datetime.today
-            last_checked = version.url
+            today = datetime.date.today()
+            last_checked = version.last_checked
             version_url = version.url
 
-            if not last_checked or not version_url or last_checked < today:
-                version_url = github_latest_release(settings.GITHUB_LATEST_RELEASE)
+            print "%s vs %s" % (today, last_checked)
+            if not last_checked or last_checked < today:
+                print "Getting latest GitHub release...."
+                # version_url = github_latest_release(settings.GITHUB_LATEST_RELEASE)
                 if version_url:
                     version.url = version_url
-                    version.last_checked = today()
-                    version.save()
+
+                version.last_checked = today
+                print "NEW %s vs %s" % (version.last_checked, today)
+
+                version.save()
 
         if version_url:
             context['version'] = version_url
 
-        '''Construct the site url used with the template tags
-        to generate the printer_portal(s) registered uri and
-        xml url for the printerlists'''
-
+        #Construct the site url used with the template tags
+        #to generate the printer_portal(s) registered uri and
+        #xml url for the printerlists
         context['site_info'] = site_info(self.request)
 
         return context
@@ -98,8 +116,9 @@ class IndexView(TemplateView):
 
 class ManageView(ProtectedView):
     template_name = 'printers/manage.html'
+    request = None
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, **kwargs):
         context = self.get_context_data(**kwargs)
         return render(request, self.template_name, context)
 
@@ -126,9 +145,10 @@ class ManageView(ProtectedView):
 
 
 class BaseFormView(FormView):
-    model = None
     template_name = 'printers/forms/base_form.html'
+    model = None
     form_class = None
+    object = None
 
     def form_valid(self, form):
         self.object = form.save(commit=True)
@@ -170,22 +190,20 @@ class BaseFormView(FormView):
 
 
 class ModelCreateView(BaseFormView, CreateView):
-
     '''Base Create View'''
     pass
 
 
 class ModelUpdateView(BaseFormView, UpdateView):
-
     '''Base Update View'''
     pass
 
 
 @login_required(redirect_field_name='')
-def object_delete(request, id, **kwargs):
+def object_delete(request, pk, **kwargs):
     model_class = kwargs.get('model_class')
     if model_class:
-        instance = get_object_or_404(model_class, pk=id)
+        instance = get_object_or_404(model_class, pk=pk)
         instance.delete()
     return redirect('manage')
 
@@ -200,6 +218,7 @@ class DetailView(ProtectedView):
     model_key = None
 
     def __init__(self, model):
+        super(DetailView, self).__init__()
         self.model = model
         if model == Printer:
             self.template_name = 'printers/printer_details.html'
@@ -215,6 +234,7 @@ class DetailView(ProtectedView):
 
         return context
 
+
 @login_required(redirect_field_name='')
 def toggle_printerlist_public(request, id):
     '''Toggle the printer list public/private'''
@@ -225,11 +245,12 @@ def toggle_printerlist_public(request, id):
 
 
 #############################################################################
-## This is the request that returns the plist for the Printer-Portal.app    #
-##  it should  be the only area that requires no login                      #
+## The following views have no tempate associated with them and generate    #
+## xml data used in the client app, or displayed in a browser.              #
 #############################################################################
-def handle_printer_list_request(
-        request, name, content_type='application/x-plist'):
+def handle_printer_list_request(request, name, \
+                                content_type='application/x-plist'):
+
     printer_list_object = get_object_or_404(PrinterList, name=name)
 
     plist = None
@@ -241,18 +262,18 @@ def handle_printer_list_request(
 
 
 def display_printer_list(request, name):
-    '''display xml data for the in a browser'''
+    '''Display xml data for the in a browser.'''
     return handle_printer_list_request(
         request, name, content_type='application/xml')
 
 
 def get_printer_list(request, name):
-    '''get xml data for the client app'''
+    '''Get xml data for the client app.'''
     return handle_printer_list_request(request, name)
 
 
 def show_printer_list(request, name):
-    '''display the xml plist for the client'''
+    '''Display the xml plist for the client.'''
     printer_list_object = get_object_or_404(PrinterList, name=name)
 
     plist = None
@@ -264,7 +285,7 @@ def show_printer_list(request, name):
 
 
 def get_subscription_list(request):
-    '''get the printers avaliable for a given subnet'''
+    '''Get the printers for a given subnet.'''
     response = None
 
     client_ip = get_client_ip(request)

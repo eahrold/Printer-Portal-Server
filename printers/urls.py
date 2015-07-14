@@ -1,4 +1,4 @@
-'''Printer URLs'''
+'''printer app URLs'''
 from django.conf.urls import patterns, url
 
 from printers.views import ModelCreateView, \
