@@ -9,18 +9,16 @@
 {% if printerlists or subscriptions %}
 
 <div class='container'>
-<h2>
+<h3>
 {% if organization %}
 Welcome to {{ organization }}'s managed printer portal.
 {% else %}
 Welcome to the managed printer portal.
 {% endif %}
-</h2>
+</h3>
 
 <h4>In no time you'll be and running with the all printers you need.</h4></br>
 </div>
-
-
 
 <font size="4">
 <!-- Setup the Client installer info -->
@@ -28,20 +26,18 @@ Welcome to the managed printer portal.
 {% if version %}
 	<strong>First: <a href={{ version }}>Download the Printer Portal Client</a></strong></br>
 	<font size="2"><i>Copy this into your applications folder, and open it once!</i></font></br>
-{% endif %}
 	<hr></hr>
+{% endif %}
 </div>
 
 <!-- Setup the printer list list -->
 {% if printerlists %}
-
 <div class='container' >
 	<strong>Select from one of the self service lists below.</strong></br>
 	<font size="2"><i>It will automatically populate the Printer-Installer menu and you can add the printers you need.</i></font><br/>
-
-	<ul>
+	<ul class="list-inline">
 	    {% for list in printerlists %}
-		<li><font size="3"><a href="{{ list.name|client_open_url:site_info}}">{{ list.name }}</a></font></li>
+			<li><a href="{{ list.name|client_open_url:site_info}}">{{ list.name }}</a></li>
 	    {% endfor %}
 	</ul>
     <hr></hr>
@@ -55,8 +51,8 @@ Welcome to the managed printer portal.
 	<font size="2"><i>This will automatically update your printer list based on your network location.</i></font>
 	<br/><br/>
 	<div class ='container'>
-	<button type="button" class="btn btn-default"><a href="{{ domain }}/subscribe">Subscribe</a></button>
-	<button type="button" class="btn btn-default"><a href="{{ domain }}/unsubscribe">Unsubscribe</a></button>
+	<button type="button" class="btn btn-default"><a href="{{ domain|client_open_url:site_info }}/subscribe">Subscribe</a></button>
+	<button type="button" class="btn btn-default"><a href="{{ domain|client_open_url:site_info }}/unsubscribe">Unsubscribe</a></button>
 	</div>
     <hr></hr>
 </div>

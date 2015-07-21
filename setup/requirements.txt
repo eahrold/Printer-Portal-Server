@@ -1,5 +1,5 @@
 Django==1.7.1
-django-bootstrap-toolkit==2.15.0
+django-bootstrap3
 django-filter
 djangorestframework
 

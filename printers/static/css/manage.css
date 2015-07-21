@@ -1,0 +1,10 @@
+.object-group {
+  padding: 30px;
+  border-bottom: thin solid DarkGray;
+}
+
+.btn-add {
+  display:inline-block;
+  width: 200px;
+  float: right;
+}
