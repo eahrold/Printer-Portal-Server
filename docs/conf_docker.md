@@ -48,3 +48,8 @@ python -c 'import random; import string; print "".join([random.SystemRandom().ch
 Goto http://localhost:8000 and poke around.  
 
 _*if you're running boot2docker you'll need to use the ip taken from `boot2docker ip`_
+
+### And rm the containers when you're done testing
+```
+docker-compose rm
+```
