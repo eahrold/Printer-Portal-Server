@@ -141,7 +141,7 @@ _CONDITIONAL_APPS = [
     'django.contrib.staticfiles',
 
     # Contrib apps
-    'bootstrap_toolkit',
+    'bootstrap3',
 
     # Project level apps
     'printers',
